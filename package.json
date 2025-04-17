@@ -1,0 +1,12 @@
+{
+  "name": "capStoneAutomationProject",
+  "type": "module",
+  "devDependencies": {
+    "@wdio/local-runner": "^9.12.2",
+    "@wdio/mocha-framework": "^9.12.2",
+    "@wdio/spec-reporter": "^9.12.2"
+  },
+  "scripts": {
+    "wdio": "wdio run ./wdio.conf.js"
+  }
+}
