@@ -128,7 +128,6 @@ class UserMenuPage extends Page {
         }
 
     }
-
     async selectAndVerifyMyProfilePage() {
         await this.selectOption(UserMenuOptions.MY_PROFILE);
         await expect(this.myProfileTitle).toBeDisplayed();

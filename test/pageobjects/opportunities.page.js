@@ -34,7 +34,8 @@ class OpportunitiesPage extends Page {
     async VerifyTitleAttribute() {
         await this.opportunitiesTab.isEnabled();
         await this.opportunitiesTab.moveTo()
-        await expect(this.opportunitiesTab).toBeDisplayed();
+       const opportunitiestitle= await this.opportunitiesTab.getAttribute('title');
+        await expect( opportunitiestitle).toBe('Opportunities Tab');
     }
 
 
