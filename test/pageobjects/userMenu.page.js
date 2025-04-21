@@ -161,8 +161,8 @@ class UserMenuPage extends Page {
     }
 
     async verifyUserMenuAccessibleByTab() {
-
-        for (let i = 0; i < 5; i++) {
+         const tabCount=5;
+        for (let i = 0; i < tabCount; i++) {
             await browser.keys('Tab');
         }
         let isFocused = await this.userNavLabel.isFocused();

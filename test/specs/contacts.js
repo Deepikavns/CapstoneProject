@@ -13,8 +13,7 @@ describe('Contacts functionality', () => {
 it('Verify that clicking the Contacts link navigates the user to the correct URL("/003/o").',async() =>{
     await contactsPage.verifyContactLinkNavigation();
 
-
- })
+})
 
 it('Verify behaviour of Contacts link on different screen resolutions', async() =>{
    await contactsPage.verifyContactsLinkOnDifferentResolutions();
@@ -25,6 +24,14 @@ it('Check if the title attribute is displayed as tooltip when hovering over the 
     await contactsPage.verifyContactLinkTitleAttribute();
  
  })
+ it('Verify that the Contacts link is accessible using keyboard navigation(Tab key)', async() =>{
+   await contactsPage.verifyContactLinkAccessibility();
+
+})
+it('Link text displays Contacts correctly', async() =>{
+   await contactsPage.VerifyLinkText();
+
+})
 
 })
 
