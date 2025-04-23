@@ -44,12 +44,11 @@ describe('UserMenu Dropdown functionality', () => {
         await UserMenuPage.verifyHoverOverEffectOnUserMenu();
 
     });
+    
     it('Verify that the user navigation button is accessible using keyboard navigation(Tab key)', async () => {
         await UserMenuPage.verifyUserMenuAccessibleByTab();
 
     });
-
-
 
 
 });

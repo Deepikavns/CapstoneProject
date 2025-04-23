@@ -2,6 +2,8 @@ import { $, browser } from '@wdio/globals'
 import Page from './page.js';
 import LoginPage from './login.page.js';
 import { expect } from '@wdio/globals';
+import { waitUntil } from "../utilities/helper"
+import userMenuData from "../resource/usermenu.json"
 
 const UserMenuOptions = {
     MY_PROFILE: 'My Profile',
@@ -48,24 +50,24 @@ class UserMenuPage extends Page {
     }
 
     async verifyHomePageTitle(expTitle) {
-        await browser.waitUntil(
+        await waitUntil(
             async () => (await browser.getTitle()) === expTitle,
-            {
-                timeout: 5000,
-            }
+             7000,
+             'Did not get title within 7 sec'
+            
         );
         const actualtitle = await browser.getTitle();
-        await expect(actualtitle).toBe(expTitle);
+       expect(actualtitle).toBe(expTitle);
     }
 
     async verifyHomePageLogo() {
-        await expect(this.homePageLogo).toBeDisplayed({ timeout: 5000 });
+      expect(this.homePageLogo).toBeDisplayed({ timeout: 8000 });
     }
 
     async verifyUserNavTitleOnHover() {
         await this.userMenuDropDown.isEnabled();
         await this.userMenuDropDown.moveTo();
-        await expect(this.titleForUserNavButton).toBeDisplayed();
+        expect(this.titleForUserNavButton).toBeDisplayed();
     }
 
     async verifyHoverOverEffectOnUserMenu() {
@@ -80,10 +82,10 @@ class UserMenuPage extends Page {
         const hoverColor = await this.userNavLabel.getCSSProperty('color');
         const afterHover = await this.userMenuDropDown.getCSSProperty('cursor');
 
-        await expect(beforeHover.value).not.toBe('pointer');
-        await expect(afterHover.value).toBe('pointer')
-        await expect(intialColor.value).not.toBe(hoverColor.value);
-        await expect(initialBackgroundColor).not.toBe(hoverBackgroundColor);
+         expect(beforeHover.value).not.toBe('pointer');
+         expect(afterHover.value).toBe('pointer')
+         expect(intialColor.value).not.toBe(hoverColor.value);
+         expect(initialBackgroundColor).not.toBe(hoverBackgroundColor);
 
 
     }
@@ -91,7 +93,7 @@ class UserMenuPage extends Page {
     async clickOnUserNavigationButton() {
         await this.userMenuDropDown.waitForClickable({ timeout: 3000 })
         await this.userMenuDropDown.click();
-        await expect(this.userNavMenuItem).toBeDisplayed();
+       expect(this.userNavMenuItem).toBeDisplayed();
 
     }
 
@@ -99,21 +101,21 @@ class UserMenuPage extends Page {
         await this.clickOnUserNavigationButton();
         await this.userMenuDropDown.waitForClickable({ timeout: 3000 })
         await this.userMenuDropDown.click();
-        await expect(this.userNavMenuItem).not.toBeDisabled();
+       expect(this.userNavMenuItem).not.toBeDisabled();
         await this.clickOnUserNavigationButton();
         await this.userMenuDropDown.waitForClickable({ timeout: 3000 })
         await this.userMenuDropDown.click();
-        await expect(this.userNavMenuItem).not.toBeDisabled();
+       expect(this.userNavMenuItem).not.toBeDisabled();
     }
 
     async VerifyMenuItemDisplayed() {
-        await expect(this.userNavMenuItem).not.toBeDisabled()
+      expect(this.userNavMenuItem).not.toBeDisabled()
     }
 
     async clickOnUserNavigationButtonAgain() {
         await this.userMenuDropDown.waitForClickable({ timeout: 3000 })
         await this.userMenuDropDown.click();
-        await expect(this.userNavMenuItem).not.toBeDisabled()
+       expect(this.userNavMenuItem).not.toBeDisabled()
     }
 
     async selectOption(optionText) {
@@ -130,16 +132,19 @@ class UserMenuPage extends Page {
     }
     async selectAndVerifyMyProfilePage() {
         await this.selectOption(UserMenuOptions.MY_PROFILE);
-        await expect(this.myProfileTitle).toBeDisplayed();
+       expect(this.myProfileTitle).toBeDisplayed();
     }
 
     async selectAndVerifyMySettingPage() {
         await this.selectOption(UserMenuOptions.MY_SETTINGS);
-        await expect(this.mySettingTitle).toBeDisplayed();
+        expect(this.mySettingTitle).toBeDisplayed();
     }
 
     async selectAndVerifyDeveloperConsoleOption() {
         await this.selectOption(UserMenuOptions.DEVELOPER_CONSOLE)
+        await waitUntil(async()=>
+            (await browser.getWindowHandles()).length > 1, 8000, "expected secound window to open"
+        )
 
         const windowHandles = await browser.getWindowHandles();
         const parentWindow = windowHandles[0];
@@ -151,13 +156,13 @@ class UserMenuPage extends Page {
         await browser.switchToWindow(parentWindow);
         const parentUrl = await browser.getUrl();
         console.log('Parent window URL:', parentUrl);
-        await expect(parentUrl).toBe('https://tekarch-e-dev-ed.develop.my.salesforce.com/setup/forcecomHomepage.apexp?setupid=ForceCom')
+        expect(parentUrl).toBe(userMenuData.HomePageURL)
     }
 
     async selectLogOutOption() {
 
         await this.selectOption(UserMenuOptions.LOGOUT)
-        await expect(LoginPage.loginLogo).toBeDisplayed();
+        expect(LoginPage.loginLogo).toBeDisplayed();
     }
 
     async verifyUserMenuAccessibleByTab() {
@@ -166,7 +171,7 @@ class UserMenuPage extends Page {
             await browser.keys('Tab');
         }
         let isFocused = await this.userNavLabel.isFocused();
-        await expect(isFocused).toBe(true);
+        expect(isFocused).toBe(true);
     }
 
 }

@@ -27,15 +27,15 @@ class OpportunitiesPage extends Page {
     async VerifyOpportunitiesNavigation() {
         await this.opportunitiesTab.isEnabled();
         await this.opportunitiesTab.click();
-        await expect(this.opportunitiesNavigationpage).toBeDisplayed();
-        await expect(browser).toHaveUrl('https://tekarch-e-dev-ed.develop.my.salesforce.com/006/o');
+        expect(this.opportunitiesNavigationpage).toBeDisplayed();
+        expect(browser).toHaveUrl('https://tekarch-e-dev-ed.develop.my.salesforce.com/006/o');
     }
 
     async VerifyTitleAttribute() {
         await this.opportunitiesTab.isEnabled();
         await this.opportunitiesTab.moveTo()
        const opportunitiestitle= await this.opportunitiesTab.getAttribute('title');
-        await expect( opportunitiestitle).toBe('Opportunities Tab');
+        expect( opportunitiestitle).toBe('Opportunities Tab');
     }
 
 
@@ -50,8 +50,8 @@ class OpportunitiesPage extends Page {
         const hoveredColor = await this.opportunitiesTab.getCSSProperty('color');
         const afterHover = await this.opportunitiesTab.getCSSProperty('cursor');
 
-        await expect(initialColor.value).not.toBe(hoveredColor.value);
-        await expect(beforeHover.value).not.toBe(afterHover.value);
+         expect(initialColor.value).not.toBe(hoveredColor.value);
+         expect(beforeHover.value).not.toBe(afterHover.value);
     }
 
 

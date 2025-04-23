@@ -1,37 +1,40 @@
 import LoginPage from '../pageobjects/login.page';
-import loginData from '../resource/login.json'
+import loginData from '../resource/login.json';
 import UserMenuPage from '../pageobjects/userMenu.page';
-import contactsPage from '../pageobjects/contacts.page';
+
+import ContactsPage from '../pageobjects/contacts.page';
 describe('Contacts functionality', () => {
 
-    beforeEach ('login to app',async() => {
+    beforeEach('login to app', async () => {
         await LoginPage.open();
-        await LoginPage.login(loginData.username,loginData.password);
+        await LoginPage.login(loginData.username, loginData.password);
         await UserMenuPage.verifyHomePageLogo();
-     })
+    })
 
-it('Verify that clicking the Contacts link navigates the user to the correct URL("/003/o").',async() =>{
-    await contactsPage.verifyContactLinkNavigation();
+    it('Verify that clicking the Contacts link navigates the user to the correct URL("/003/o").', async () => {
+        await ContactsPage.verifyContactLinkNavigation();
 
-})
+    })
 
-it('Verify behaviour of Contacts link on different screen resolutions', async() =>{
-   await contactsPage.verifyContactsLinkOnDifferentResolutions();
+    it('Verify behaviour of Contacts link on different screen resolutions', async () => {
+        await ContactsPage.verifyContactsLinkOnDifferentResolutions();
 
-})
+    })
 
-it('Check if the title attribute is displayed as tooltip when hovering over the Contacts link', async() =>{
-    await contactsPage.verifyContactLinkTitleAttribute();
- 
- })
- it('Verify that the Contacts link is accessible using keyboard navigation(Tab key)', async() =>{
-   await contactsPage.verifyContactLinkAccessibility();
+    it('Check if the title attribute is displayed as tooltip when hovering over the Contacts link', async () => {
+        await ContactsPage.verifyContactLinkTitleAttribute();
 
-})
-it('Link text displays Contacts correctly', async() =>{
-   await contactsPage.VerifyLinkText();
+    })
 
-})
+    it('Verify that the Contacts link is accessible using keyboard navigation(Tab key)', async () => {
+        await ContactsPage.verifyContactLinkAccessibility();
+
+    })
+
+    it('Link text displays Contacts correctly', async () => {
+        await ContactsPage.VerifyLinkText();
+
+    })
 
 })
 

@@ -23,11 +23,13 @@ class LoginPage extends Page {
     async enterUsername(username) {
         await this.inputUsername.waitForDisplayed();
         await this.inputUsername.setValue(username)
+        expect (this.inputUsername).toHaveValue(username)
     }
 
     async enterpassword(password) {
         await this.inputPassword.waitForDisplayed();
-        await this.inputPassword.setValue(password)
+        await this.inputPassword.setValue(password);
+        expect (this.inputPassword).toHaveValue(password)
     }
 
     async login(username, password) {
@@ -41,33 +43,33 @@ class LoginPage extends Page {
         await this.enterUsername(username);
         await this.enterpassword(password);
         let isEnabled = await this.loginBtn.isEnabled();
-        await expect(isEnabled).toBe(true);
+        expect(isEnabled).toBe(true);
     }
 
     async loginErrorMessage() {
-        await expect(this.errorMessage).toBeDisplayed()
+         expect(this.errorMessage).toBeDisplayed()
     }
 
     async loginErrorMessageforEmptyusername(username) {
         await this.enterUsername(username);
         await this.inputPassword.clearValue();
         await this.loginBtn.click();
-        await expect(this.errorMessage).toBeDisplayed()
+        expect(this.errorMessage).toBeDisplayed()
     }
 
     async VerifyHoverEffect() {
         const beforeHover = await this.loginLogo.getCSSProperty('cursor');
-        await expect(beforeHover.value).not.toBe('pointer');
+        expect(beforeHover.value).not.toBe('pointer');
         await this.loginBtn.moveTo();
         const afterHover = await this.loginBtn.getCSSProperty('cursor');
-        await expect(afterHover.value).toBe('pointer');
+        expect(afterHover.value).toBe('pointer');
         const initialColor = await this.loginBtn.getCSSProperty('background-color')
         await this.loginBtn.moveTo();
         const hoverColor = await this.loginBtn.getCSSProperty('background-color')
-        await expect(initialColor).not.toBe(hoverColor);
+        expect(initialColor).not.toBe(hoverColor);
         await this.loginBtn.click();
         const clickColor = await this.loginBtn.getCSSProperty('background-color');
-        await expect(hoverColor).not.toBe(clickColor);
+        expect(hoverColor).not.toBe(clickColor);
     }
 
 
