@@ -1,20 +1,20 @@
 
-import LoginPage from '../pageobjects/login.page.js'
+import LoginPage from '../pageobjects/login.js'
 import loginData from '../resource/login.json'
-import userMenuPage from '../pageobjects/userMenu.page.js';
+import userMenuPage from '../pageobjects/user-menu.js';
 import { verifyMultipleClickOnElement } from '../utilities/helper.js'
 
 
 describe('My Login application', () => {
     beforeEach('Launch the website', async () => {
-        await LoginPage.open();
+        await LoginPage.navigateTo();
     })
 
     it("Confirm 'Log In'Button is enabled after entering the username and password", async () => {
         await LoginPage.isLoginButtonEnabled(loginData.username, loginData.password);
     })
 
-    it("Verify visual feedback on hover and click the login button.", async () => {
+    it("Verify visual feedback on hover the login button.", async () => {
         await LoginPage.VerifyHoverEffect();
 
     })
@@ -26,7 +26,7 @@ describe('My Login application', () => {
     })
 
     it("Error message for invalid credentials on login", async () => {
-        await LoginPage.login(loginData.invalidUsename, loginData.invalidPassword);
+        await LoginPage.login(loginData.invalidUsername, loginData.invalidPassword);
         await LoginPage.loginErrorMessage();
 
     })

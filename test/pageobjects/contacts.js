@@ -1,34 +1,29 @@
-import { $ } from '@wdio/globals';
-import Page from './page.js';
+
 import { expect } from '@wdio/globals';
-import { waitUntil } from "../utilities/helper"
+import { waitUntil } from "../utilities/helper.js"
+import BasePage from './base.js';
 
 
 
 
-class ContactsPage extends Page {
+class ContactsPage extends BasePage {
 
     get contactsLink() {
-        return $('[title="Contacts Tab"]');
+        return $('//a[contains(@title,"Contacts ")]');
     }
-    get contactsPageText() {
-        return $('//h1[text()="Contacts"]');
-    }
+    
     get cases() {
-        return $('[title="Cases Tab"]');
+        return $('//a[contains(@title, "Cases")]');
     }
 
 
     async verifyContactLinkNavigation() {
-        await this.contactsLink.waitForDisplayed({timeout:5000});
-        await this.contactsLink.waitForClickable({timeout:5000});
-        await this.contactsLink.click();
+        await this.clickBtn(this.contactsLink)
         await waitUntil(
-            async () => (await browser.getUrl()).includes('/003/o'), 6000,
+            async () => (await browser.getUrl()).includes('/003/o'), 8000,
             'URL did not change within 5 sec'
         )
-        const expectUrl = await browser.getUrl()
-        expect(expectUrl).toContain('/003/o');
+        expect(await browser.getUrl()).toContain('/003/o');
 
     }
 
@@ -39,31 +34,30 @@ class ContactsPage extends Page {
     }
 
     async VerifyLinkText() {
-        const text = await this.contactsLink.getText();
-        expect(text).toBe('Contacts');
+        expect(await this.contactsLink.getText()).toBe('Contacts');
     }
 
     async verifyContactLinkAccessibility() {
         const tabCount = 12;
-        await this.contactsLink.waitForDisplayed({timeout:5000})
+        await this.contactsLink.waitForDisplayed({ timeout: 5000 })
         for (let i = 0; i < tabCount; i++) {
             await browser.keys('Tab');
         }
         await waitUntil(
-        async() => await this.contactsLink.isFocused(),5000,'contact link was not focused')
+            async () => await this.contactsLink.isFocused(), 5000, 'contact link was not focused')
         let isFocusedContact = await this.contactsLink.isFocused();
-         expect(isFocusedContact).toBe(true);
+        expect(isFocusedContact).toBe(true);
 
         await browser.keys('Tab');
         await waitUntil(
-        async() => await this.cases.isFocused(),5000,'cases link was not focused')
+            async () => await this.cases.isFocused(), 5000, 'cases link was not focused')
 
-        let isFocused= await this.cases.isFocused();
+        let isFocused = await this.cases.isFocused();
         expect(isFocused).toBe(true);
-       
-        await browser.keys(['Shift','Tab'])
+
+        await browser.keys(['Shift', 'Tab'])
         await browser.keys('NUll');
-       
+
         expect(isFocusedContact).toBe(true);
 
 

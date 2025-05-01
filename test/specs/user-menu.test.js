@@ -1,27 +1,19 @@
-import UserMenuPage from "../pageobjects/userMenu.page";
-import LoginPage from "../pageobjects/login.page";
+import UserMenuPage from "../pageobjects/user-menu";
+import LoginPage from "../pageobjects/login";
 import loginData from '../resource/login.json';
 import userMenuData from "../resource/usermenu.json"
 import { verifyMultipleClickOnElement } from '../utilities/helper'
+import userMenuPage from "../pageobjects/user-menu";
 describe('UserMenu Dropdown functionality', () => {
 
     beforeEach('login To app', async () => {
-        await LoginPage.open();
+        await LoginPage.navigateTo();
         await LoginPage.login(loginData.username, loginData.password);
         await UserMenuPage.verifyHomePageTitle(userMenuData.expectedTitle);
     })
 
     it('Verify that clicking the usermenu dropdown button displays the expected options', async () => {
-        //Verify my profile
-        await UserMenuPage.selectAndVerifyMyProfilePage();
-        await browser.back();
-        //Verify my Setting
-        await UserMenuPage.selectAndVerifyMySettingPage();
-        await browser.back();
-        //Verify Developer Console
-        await UserMenuPage.selectAndVerifyDeveloperConsoleOption();
-        //Verify LogOut 
-        await UserMenuPage.selectLogOutOption();
+        await userMenuPage.verifyUserMenuOption();
     });
 
     it('Test if user menu dropdown button closes when clicked again after it has opened.', async () => {
@@ -44,7 +36,7 @@ describe('UserMenu Dropdown functionality', () => {
         await UserMenuPage.verifyHoverOverEffectOnUserMenu();
 
     });
-    
+
     it('Verify that the user navigation button is accessible using keyboard navigation(Tab key)', async () => {
         await UserMenuPage.verifyUserMenuAccessibleByTab();
 

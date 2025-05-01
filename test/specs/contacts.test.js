@@ -1,12 +1,11 @@
-import LoginPage from '../pageobjects/login.page';
+import LoginPage from '../pageobjects/login';
 import loginData from '../resource/login.json';
-import UserMenuPage from '../pageobjects/userMenu.page';
-
-import ContactsPage from '../pageobjects/contacts.page';
+import UserMenuPage from '../pageobjects/user-menu';
+import ContactsPage from '../pageobjects/contacts';
 describe('Contacts functionality', () => {
 
     beforeEach('login to app', async () => {
-        await LoginPage.open();
+        await LoginPage.navigateTo();
         await LoginPage.login(loginData.username, loginData.password);
         await UserMenuPage.verifyHomePageLogo();
     })

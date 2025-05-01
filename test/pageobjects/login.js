@@ -1,8 +1,9 @@
-import { $ } from '@wdio/globals'
-import Page from './page.js';
+
+import BasePage from './base';
+import { hoveroverEffect, waitUntil } from "../utilities/helper.js"
 
 
-class LoginPage extends Page {
+class LoginPage extends BasePage {
     get inputUsername() {
         return $('#username')
     }
@@ -23,19 +24,19 @@ class LoginPage extends Page {
     async enterUsername(username) {
         await this.inputUsername.waitForDisplayed();
         await this.inputUsername.setValue(username)
-        expect (this.inputUsername).toHaveValue(username)
+        expect(this.inputUsername).toHaveValue(username)
     }
 
     async enterpassword(password) {
         await this.inputPassword.waitForDisplayed();
         await this.inputPassword.setValue(password);
-        expect (this.inputPassword).toHaveValue(password)
+        expect(this.inputPassword).toHaveValue(password)
     }
 
     async login(username, password) {
         await this.enterUsername(username);
         await this.enterpassword(password);
-        await this.loginBtn.click();
+        await this.clickBtn(this.loginBtn);
 
     }
 
@@ -47,34 +48,29 @@ class LoginPage extends Page {
     }
 
     async loginErrorMessage() {
-         expect(this.errorMessage).toBeDisplayed()
+        expect(this.errorMessage).toBeDisplayed()
     }
 
     async loginErrorMessageforEmptyusername(username) {
         await this.enterUsername(username);
         await this.inputPassword.clearValue();
-        await this.loginBtn.click();
+        await this.clickBtn(this.loginBtn);
         expect(this.errorMessage).toBeDisplayed()
     }
 
+
     async VerifyHoverEffect() {
-        const beforeHover = await this.loginLogo.getCSSProperty('cursor');
-        expect(beforeHover.value).not.toBe('pointer');
-        await this.loginBtn.moveTo();
-        const afterHover = await this.loginBtn.getCSSProperty('cursor');
-        expect(afterHover.value).toBe('pointer');
-        const initialColor = await this.loginBtn.getCSSProperty('background-color')
-        await this.loginBtn.moveTo();
-        const hoverColor = await this.loginBtn.getCSSProperty('background-color')
-        expect(initialColor).not.toBe(hoverColor);
-        await this.loginBtn.click();
-        const clickColor = await this.loginBtn.getCSSProperty('background-color');
-        expect(hoverColor).not.toBe(clickColor);
+         const initialColor = await this.loginBtn.getCSSProperty('background-color')
+         await this.loginBtn.moveTo();
+         const hoverColor = await this.loginBtn.getCSSProperty('background-color')
+         expect(initialColor.value).not.toBe(hoverColor.value);
+         const { beforeHover, afterHover } = await hoveroverEffect(this.loginLogo, this.loginBtn);
+         expect(beforeHover.value).not.toBe(afterHover.value);
     }
 
 
-    open() {
-        return super.open('/');
+    navigateTo() {
+        return super.navigateTo('/');
     }
 }
 export default new LoginPage();

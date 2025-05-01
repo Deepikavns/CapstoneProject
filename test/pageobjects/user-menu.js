@@ -1,9 +1,9 @@
-import { $, browser } from '@wdio/globals'
-import Page from './page.js';
-import LoginPage from './login.page.js';
+
+import LoginPage from './login.js';
 import { expect } from '@wdio/globals';
-import { waitUntil } from "../utilities/helper"
+import { waitUntil, hoveroverEffect } from "../utilities/helper.js"
 import userMenuData from "../resource/usermenu.json"
+import BasePage from './base.js';
 
 const UserMenuOptions = {
     MY_PROFILE: 'My Profile',
@@ -14,11 +14,12 @@ const UserMenuOptions = {
 };
 
 
-class UserMenuPage extends Page {
+class UserMenuPage extends BasePage {
 
     get homePageLogo() {
         return $('[id="phHeaderLogoImage"]');
     }
+
     get userNavButton() {
         return $('[id="userNavButton"]');
     }
@@ -26,6 +27,7 @@ class UserMenuPage extends Page {
     get userMenuDropDown() {
         return $('//div[@id="userNav"]');
     }
+
     get userNavLabel() {
         return $('span[id="userNavLabel"]');
     }
@@ -33,6 +35,7 @@ class UserMenuPage extends Page {
     get userMenuDropDownList() {
         return $$('//div[@id="userNav-menuItems"]//a');
     }
+
     get myProfileTitle() {
         return $('//span[@id="tailBreadcrumbNode"]');
     }
@@ -52,16 +55,16 @@ class UserMenuPage extends Page {
     async verifyHomePageTitle(expTitle) {
         await waitUntil(
             async () => (await browser.getTitle()) === expTitle,
-             7000,
-             'Did not get title within 7 sec'
-            
+            7000,
+            'Did not get title within 7 sec'
+
         );
         const actualtitle = await browser.getTitle();
-       expect(actualtitle).toBe(expTitle);
+        expect(actualtitle).toBe(expTitle);
     }
 
     async verifyHomePageLogo() {
-      expect(this.homePageLogo).toBeDisplayed({ timeout: 8000 });
+        expect(this.homePageLogo).toBeDisplayed({ timeout: 8000 });
     }
 
     async verifyUserNavTitleOnHover() {
@@ -72,50 +75,37 @@ class UserMenuPage extends Page {
 
     async verifyHoverOverEffectOnUserMenu() {
         await this.verifyHomePageLogo();
-        const beforeHover = await this.homePageLogo.getCSSProperty('cursor');
-        const intialColor = await this.userNavLabel.getCSSProperty('color');
-        const initialBackgroundColor = await this.userMenuDropDown.getCSSProperty('background-color')
-
-        await this.userMenuDropDown.moveTo();
-
-        const hoverBackgroundColor = await this.userMenuDropDown.getCSSProperty('background-color')
-        const hoverColor = await this.userNavLabel.getCSSProperty('color');
-        const afterHover = await this.userMenuDropDown.getCSSProperty('cursor');
-
-         expect(beforeHover.value).not.toBe('pointer');
-         expect(afterHover.value).toBe('pointer')
-         expect(intialColor.value).not.toBe(hoverColor.value);
-         expect(initialBackgroundColor).not.toBe(hoverBackgroundColor);
-
+        const { beforeHover, afterHover, initialColor, hoveredColor } = await hoveroverEffect(this.homePageLogo, this.userNavLabel);
+        expect(initialColor.value).not.toBe(hoveredColor.value);
+        expect(beforeHover.value).not.toBe(afterHover.value);
 
     }
 
+
     async clickOnUserNavigationButton() {
-        await this.userMenuDropDown.waitForClickable({ timeout: 3000 })
-        await this.userMenuDropDown.click();
-       expect(this.userNavMenuItem).toBeDisplayed();
+        await this.clickBtn(this.userMenuDropDown);
+        expect(this.userNavMenuItem).toBeDisplayed();
 
     }
 
     async toggleUserNavigationButton() {
         await this.clickOnUserNavigationButton();
-        await this.userMenuDropDown.waitForClickable({ timeout: 3000 })
-        await this.userMenuDropDown.click();
-       expect(this.userNavMenuItem).not.toBeDisabled();
+        await this.clickBtn(this.userMenuDropDown);
+        expect(this.userNavMenuItem).not.toBeDisabled();
         await this.clickOnUserNavigationButton();
-        await this.userMenuDropDown.waitForClickable({ timeout: 3000 })
-        await this.userMenuDropDown.click();
-       expect(this.userNavMenuItem).not.toBeDisabled();
+        await this.clickBtn(this.userMenuDropDown);
+        expect(this.userNavMenuItem).not.toBeDisabled();
+
     }
 
     async VerifyMenuItemDisplayed() {
-      expect(this.userNavMenuItem).not.toBeDisabled()
+        expect(this.userNavMenuItem).not.toBeDisabled()
+
     }
 
     async clickOnUserNavigationButtonAgain() {
-        await this.userMenuDropDown.waitForClickable({ timeout: 3000 })
-        await this.userMenuDropDown.click();
-       expect(this.userNavMenuItem).not.toBeDisabled()
+        await this.clickBtn(this.userMenuDropDown);
+        expect(this.userNavMenuItem).not.toBeDisabled()
     }
 
     async selectOption(optionText) {
@@ -123,7 +113,7 @@ class UserMenuPage extends Page {
         for (let i = 0; i < await this.userMenuDropDownList.length; i++) {
             const dropDownOptin = await this.userMenuDropDownList[i].getText();
             if (dropDownOptin === optionText) {
-                await this.userMenuDropDownList[i].click();
+                await this.clickBtn(this.userMenuDropDownList[i]);
                 break;
 
             }
@@ -132,17 +122,19 @@ class UserMenuPage extends Page {
     }
     async selectAndVerifyMyProfilePage() {
         await this.selectOption(UserMenuOptions.MY_PROFILE);
-       expect(this.myProfileTitle).toBeDisplayed();
+        expect(this.myProfileTitle).toBeDisplayed();
+
     }
 
     async selectAndVerifyMySettingPage() {
         await this.selectOption(UserMenuOptions.MY_SETTINGS);
         expect(this.mySettingTitle).toBeDisplayed();
+
     }
 
     async selectAndVerifyDeveloperConsoleOption() {
         await this.selectOption(UserMenuOptions.DEVELOPER_CONSOLE)
-        await waitUntil(async()=>
+        await waitUntil(async () =>
             (await browser.getWindowHandles()).length > 1, 8000, "expected secound window to open"
         )
 
@@ -157,21 +149,37 @@ class UserMenuPage extends Page {
         const parentUrl = await browser.getUrl();
         console.log('Parent window URL:', parentUrl);
         expect(parentUrl).toBe(userMenuData.HomePageURL)
+
     }
 
     async selectLogOutOption() {
-
         await this.selectOption(UserMenuOptions.LOGOUT)
         expect(LoginPage.loginLogo).toBeDisplayed();
+
+    }
+
+    async verifyUserMenuOption() {
+        //Verify my profile
+        await this.selectAndVerifyMyProfilePage();
+        await browser.back();
+        //Verify my Setting
+        await this.selectAndVerifyMySettingPage();
+        await browser.back();
+        //Verify Developer Console
+        await this.selectAndVerifyDeveloperConsoleOption();
+        //Verify LogOut 
+        await this.selectLogOutOption();
+
     }
 
     async verifyUserMenuAccessibleByTab() {
-         const tabCount=5;
+        const tabCount = 5;
         for (let i = 0; i < tabCount; i++) {
             await browser.keys('Tab');
         }
         let isFocused = await this.userNavLabel.isFocused();
         expect(isFocused).toBe(true);
+
     }
 
 }
